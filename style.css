@@ -1,0 +1,59 @@
+body {
+    /* background-color: #263238; #263238 80%, #37474F 60%*/
+    background: linear-gradient(60deg, #0B173B 80%, #0B2161 60%);
+    min-height: 2000px;
+}
+
+.filter-section {
+    width:300px;
+    position: absolute;
+    top:100px;
+    left:20px;
+
+}
+
+.table-section {
+    position: absolute;
+    left: 340px;
+    top:80px;
+    width:auto;
+    right:20px;
+    background-color: rgb(207,216,220,0.5);
+    
+}
+
+#header {
+    position: relative;
+    width: 100%;
+    height: 80px;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+}
+
+#header_word {
+    position: absolute;
+    left: 20px;
+    top: 3px;
+    color: skyblue;
+    font-family:Verdana;
+
+}
+
+table {
+    table-layout:fixed;
+    width:100%;
+
+   
+}
+.panel-body {
+    background-color: darkgray;
+}
+.form-group {
+    background-color: white;
+}
+
+
+
