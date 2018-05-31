@@ -1,4 +1,4 @@
-// initiate the ufodata
+// initiate the variables
 var filteredUfoData = dataSet;
 var $dateInput = document.querySelector("#date");
 var $cityInput = document.querySelector("#city");
@@ -6,47 +6,77 @@ var $stateInput = document.querySelector("#state");
 var $countryInput = document.querySelector("#country");
 var $shapeInput = document.querySelector("#shape");
 var $searchBtn = document.querySelector("#search");
-
-$searchBtn.addEventListener("click", handleSearchButtonClick);
-
 var $tbody = document.querySelector("tbody");
 
-// var result_start = 0;
-// var result_end = 50;
-var result_per_page = 0;
+var result_per_page = 50;
 var page_num = 1;
 var result_start = (page_num - 1) * result_per_page;
-var result_end = page_num * result_per_page;
+var total_result = filteredUfoData.length;
+var total_page = Math.ceil(total_result/result_per_page);
 
+// call handleSearchButtonClick when click search button
+$searchBtn.addEventListener("click", handleSearchButtonClick);
+
+
+// function to update pagination
 function paginationUpdate() {
   d3.selectAll("li").remove();
-  d3.selectAll("#result_per_page").remove();
   
-  var total_result = filteredUfoData.length;
-  if (total_result > 500) {
-    var total_page = 10;
-    result_per_page = Math.ceil(total_result/total_page);
-  }
-  else if (total_result > 50) {
-    result_per_page = 50;
-    total_page = Math.ceil(total_result/result_per_page);
+  
+  if (total_page > 5) {
+    d3.select("ul").append("li").append("a").attr("aria-label","Previous").append("span").attr("aria-hidden","true").text("Previous");
+    for (var i = 0; i < 3; i++) {
+      var $li = d3.select("ul").append("li").append("a");
+      $li.text(i+1);
+    }
+    $li = d3.select("ul").append("li").append("a");
+    $li.text("...");
+    $li = d3.select("ul").append("li").append("a");
+    $li.text(total_page);
+
+    d3.select("ul").append("li").append("a").attr("aria-label","Next").append("span").attr("aria-hidden","true").text("Next");
+    
   }
   else {
-    result_per_page = total_result;
-    total_page = 1;
+    d3.select("ul").append("li").append("a").attr("aria-label","Previous").append("span").attr("aria-hidden","true").text("Previous");
+    for (var i = 0; i < total_page; i++) {
+      var $li = d3.select("ul").append("li").append("a");
+      $li.text(i+1);
+    }
+    d3.select("ul").append("li").append("a").attr("aria-label","Next").append("span").attr("aria-hidden","true").text("Next");
   }
+  resultCount();
 
-  d3.select("ul").append("li").append("a").attr("aria-label","Previous").append("span").attr("aria-hidden","true").text("Previous");
-  for (var i = 0; i < total_page; i++) {
-    var $li = d3.select("ul").append("li").append("a");
-    $li.text(i+1);
-  }
-  d3.select("ul").append("li").append("a").attr("aria-label","Next").append("span").attr("aria-hidden","true").text("Next");
-  d3.select("nav").append("p").attr("id","result_per_page").attr("style","color:white").text(result_per_page + " results/page")
-
-  
 }
 
+// function to intiate result count after each new search
+function resultCountInit() {
+  d3.select("#result-count").select("p").remove();
+  result_start = 0;
+  var start_result = result_start + 1;
+  if (page_num !== total_page) {    
+    var end_result = result_start + 50;    
+  }
+  else {    
+    var end_result = total_result;    
+  }
+  d3.select("#result-count").append("p").attr("style","color:white").text("Showing " + start_result + " to " + end_result + " of " + total_result + " results");
+}
+
+// function to update result count
+function resultCount() {
+  d3.select("#result-count").select("p").remove();
+  var start_result = result_start + 1;
+  if (page_num !== total_page) {    
+    var end_result = result_start + 50;    
+  }
+  else {    
+    var end_result = total_result;    
+  }
+  d3.select("#result-count").append("p").attr("style","color:white").text("Showing " + start_result + " to " + end_result + " of " + total_result + " results");
+}
+
+// function to update data table
 function renderTable() {
     $tbody.innerHTML = "";
     for (var i = 0; i < result_per_page; i++) {
@@ -67,11 +97,19 @@ function renderTable() {
 
 function renderTable2() {
   result_start = (page_num - 1) * result_per_page;
-  
+  if (page_num !== total_page) {
+    var result_per_page_end = result_per_page;
+  }
+  else {
+    var result_per_page_end = total_result - (total_page - 1)*result_per_page;
+    console.log(result_per_page_end);
+  }
   $tbody.innerHTML = "";
-  for (var i = 0; i < result_per_page; i++) {
+  for (var i = 0; i < result_per_page_end; i++) {
+    var result_per_page_start = i + result_start;
+    console.log(result_per_page_start);
+    var ufo = filteredUfoData[result_per_page_start];
     
-    var ufo = filteredUfoData[i+result_start];
     var fields = Object.keys(ufo);
     
     var $row = $tbody.insertRow(i);
@@ -81,22 +119,20 @@ function renderTable2() {
       var $cell = $row.insertCell(j);
       $cell.innerText = ufo[field];
     }
-  }
-
-  
+  }  
 }
 
 
-
+// function to handle search button
 function handleSearchButtonClick() {
-    // Format the user's search by removing leading and trailing whitespace, lowercase the string
+    
     var filterDate = $dateInput.value.trim();
     var filterCity = $cityInput.value.trim();
     var filterState = $stateInput.value.trim();
     var filterCountry = $countryInput.value.trim();
     var filterShape = $shapeInput.value.trim();
   
-    // Set filteredAddresses to an array of all addresses whose "state" matches the filter
+    
     filteredUfoData = dataSet.filter(function(ufo) {
       var ufoDate = ufo.datetime;
       var ufoCity = ufo.city;
@@ -104,20 +140,55 @@ function handleSearchButtonClick() {
       var ufoCountry = ufo.country;
       var ufoShape = ufo.shape;
   
-      // If true, add the address to the filteredAddresses, otherwise don't add it to filteredAddresses
+      
       return (ufoDate === filterDate || filterDate === "") && (ufoCity === filterCity || filterCity === "") && (ufoState === filterState || filterState === "") && (ufoCountry === filterCountry || filterCountry === "") && (ufoShape === filterShape || filterShape === "")   
     });
-    paginationUpdate()
+
+    total_result = filteredUfoData.length;
+    total_page = Math.ceil(total_result/result_per_page);
+
+    resultCountInit();
+    paginationUpdate();
     renderTable();
+    
+    d3.selectAll("li").on("click", function() {
+  
+      this_content = this.innerText;
+      if (this_content === "Previous"){
+        page_num --;
+      }
+      else if (this_content === "Next"){
+        page_num ++;
+      }
+      else {
+        page_num = parseInt(this_content);
+      }
+
+      renderTable2();
+      resultCount();
+    });
   }
-paginationUpdate()
+
+paginationUpdate();
 renderTable();
 
+
+// function to handle pagination button
 d3.selectAll("li").on("click", function() {
-  //  2. What will be logged out? What is `this` in this case?
-  console.log("Here, this is the li");
-  console.log(this.innerText);
-  page_num = this.innerText;
-  //  Answer: It will console log the `button` element.
+  
+  this_content = this.innerText;
+  if (this_content === "Previous"){
+    page_num --;
+  }
+  else if (this_content === "Next"){
+    page_num ++;
+  }
+  else {
+    page_num = parseInt(this_content);
+  }
+
   renderTable2();
+  resultCount();
 });
+
+

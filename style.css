@@ -1,5 +1,5 @@
 body {
-    /* background-color: #263238; #263238 80%, #37474F 60%*/
+    
     background: linear-gradient(60deg, #0B173B 80%, #0B2161 60%);
     height: 500px;
 }
@@ -20,8 +20,6 @@ body {
     width:auto;
     right:20px;
     
-   
-    /* background-color: rgb(207,216,220,0.5); */
 }
 
 
@@ -47,16 +45,15 @@ img {
 }
 
 table {
-    /* table-layout:auto; */
+    
     width:100%;  
-    background-color: #B0BEC5;
-    /* rgb(207,216,220,0.5); */
+    background-color: #E0E0E0;
+    
 }
 .panel-body {
-    /* background-image: none; */
-    /* position: relative; */
-    background-color: #B0BEC5;
-    /* rgb(207,216,220,0.5);    */
+
+    background-color: #E0E0E0;
+
 }
 .form-group {
     
@@ -77,8 +74,12 @@ td {
 }
 
 #page {
-    /* left: 50%; */
+
     align-self: center
+}
+
+#result-count {
+    text-align: center;
 }
 
 
