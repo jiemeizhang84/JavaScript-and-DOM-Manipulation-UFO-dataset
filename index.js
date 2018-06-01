@@ -54,7 +54,7 @@ function resultCountInit() {
   d3.select("#result-count").select("p").remove();
   result_start = 0;
   var start_result = result_start + 1;
-  if (page_num !== total_page) {    
+  if (total_page !==1) {    
     var end_result = result_start + 50;    
   }
   else {    
@@ -147,9 +147,10 @@ function handleSearchButtonClick() {
     total_result = filteredUfoData.length;
     total_page = Math.ceil(total_result/result_per_page);
 
-    resultCountInit();
+    
     paginationUpdate();
     renderTable();
+    resultCountInit();
     
     d3.selectAll("li").on("click", function() {
   
