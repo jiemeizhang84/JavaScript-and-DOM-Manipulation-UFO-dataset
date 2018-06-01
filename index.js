@@ -54,6 +54,8 @@ function resultCountInit() {
   d3.select("#result-count").select("p").remove();
   result_start = 0;
   var start_result = result_start + 1;
+
+  console.log(total_page);
   if (total_page !==1) {    
     var end_result = result_start + 50;    
   }
@@ -78,20 +80,28 @@ function resultCount() {
 
 // function to update data table
 function renderTable() {
-    $tbody.innerHTML = "";
-    for (var i = 0; i < result_per_page; i++) {
+  if (total_page!==1) {
+    var result_per_page_end = result_per_page;
+  }
+  else {
+    var result_per_page_end = total_result;
+    console.log(result_per_page_end);
+  }
+  
+  $tbody.innerHTML = "";
+  for (var i = 0; i < result_per_page_end; i++) {
+    
+    var ufo = filteredUfoData[i];
+    var fields = Object.keys(ufo);
+    
+    var $row = $tbody.insertRow(i);
+    for (var j = 0; j < fields.length; j++) {
       
-      var ufo = filteredUfoData[i];
-      var fields = Object.keys(ufo);
-      
-      var $row = $tbody.insertRow(i);
-      for (var j = 0; j < fields.length; j++) {
-        
-        var field = fields[j];
-        var $cell = $row.insertCell(j);
-        $cell.innerText = ufo[field];
-      }
+      var field = fields[j];
+      var $cell = $row.insertCell(j);
+      $cell.innerText = ufo[field];
     }
+  }
 
 }
 
